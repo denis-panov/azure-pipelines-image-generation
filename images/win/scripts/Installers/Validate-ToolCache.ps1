@@ -10,7 +10,7 @@ function GetChildFolders {
         [Parameter(Mandatory = $True)]
         [string]$Path
     )
-    return Get-ChildItem "$Path" | Where-Object {$_.PSIsContainer} | Foreach-Object {$_.Name}
+    return Get-ChildItem -Path $Path -Directory -Name
 }
 
 function ToolcacheTest {
