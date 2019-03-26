@@ -63,9 +63,9 @@ if [ -d "$AGENT_TOOLSDIRECTORY/Ruby" ]; then
       done
    else
       echo "$AGENT_TOOLSDIRECTORY/Ruby does not include any folders"
-      #exit 1 It's temporary mock until Ruby added to toolcache
+      exit 1
    fi
 else
    echo "$AGENT_TOOLSDIRECTORY/Ruby does not exist"
-   # exit 1 It's temporary mock until Ruby added to toolcache
+   exit 1
 fi

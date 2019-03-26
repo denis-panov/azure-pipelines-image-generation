@@ -18,8 +18,6 @@ function ToolcacheTest {
         [Parameter(Mandatory = $True)]
         [string]$SoftwareName,
         [Parameter(Mandatory = $True)]
-        [bool]$IsRequireSoft,
-        [Parameter(Mandatory = $True)]
         [string[]]$ExecTests,
         [Parameter(Mandatory = $True)]
         [string]$Note
@@ -62,19 +60,13 @@ function ToolcacheTest {
         else
         {
             Write-Host "$env:AGENT_TOOLSDIRECTORY\$SoftwareName does not include any folders"
-            if ($IsRequireSoft)
-            {
-                exit 1
-            }
+            exit 1
         }
     }
     else
     {
         Write-Host "$env:AGENT_TOOLSDIRECTORY\$SoftwareName does not exist"
-        if ($IsRequireSoft)
-        {
-            exit 1
-        }
+        exit 1
     }
 }
 
@@ -84,7 +76,7 @@ $PythonNote += @"
 > Note: These versions of Python are available through the [Use Python Version](https://go.microsoft.com/fwlink/?linkid=871498) task.
 "@
 $PythonTests = @("python.exe", "Scripts\pip.exe")
-ToolcacheTest -SoftwareName "Python" -IsRequireSoft $True -ExecTests $PythonTests -Note $PythonNote
+ToolcacheTest -SoftwareName "Python" -ExecTests $PythonTests -Note $PythonNote
 
 # Ruby test
 $RubyNote += @"
@@ -92,4 +84,4 @@ $RubyNote += @"
 > Note: These versions of Ruby are available through the [Use Ruby Version](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-ruby-version) task.
 "@
 $RubyTests = @("bin\ruby.exe")
-ToolcacheTest -SoftwareName "Ruby" -IsRequireSoft $False -ExecTests $RubyTests -Note $RubyNote
+ToolcacheTest -SoftwareName "Ruby" -ExecTests $RubyTests -Note $RubyNote
