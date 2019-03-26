@@ -15,7 +15,7 @@ AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 # Python test
 if [ -d "$AGENT_TOOLSDIRECTORY/Python" ]; then
    cd $AGENT_TOOLSDIRECTORY/Python
-   python_dirs=($(ls -d */))
+   python_dirs=($(find . -mindepth 1 -maxdepth 1 -type d | sed "s|^\./||"))
    echo "Python versions folders: ${python_dirs[@]}"
    echo "------------------------------------------"
    if [ -n "$python_dirs" ]; then
@@ -44,7 +44,7 @@ fi
 # Ruby test
 if [ -d "$AGENT_TOOLSDIRECTORY/Ruby" ]; then
    cd $AGENT_TOOLSDIRECTORY/Ruby
-   ruby_dirs=($(ls -d */))
+   ruby_dirs=($(find . -mindepth 1 -maxdepth 1 -type d | sed "s|^\./||"))
    echo "Ruby versions folders: ${ruby_dirs[@]}"
    echo "--------------------------------------"
    if [ -n "$ruby_dirs" ]; then
