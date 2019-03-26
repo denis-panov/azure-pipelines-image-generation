@@ -27,36 +27,46 @@ function ToolcacheTest {
     if (Test-Path "$env:AGENT_TOOLSDIRECTORY\$SoftwareName")
     {
         $description = ""
-        $versions = GetChildFolders -Path "$env:AGENT_TOOLSDIRECTORY\$SoftwareName"
-        foreach ($version in $versions)
-        {
-            $architectures = GetChildFolders -Path "$env:AGENT_TOOLSDIRECTORY\$SoftwareName\$version"
-
-            Write-Host "$SoftwareName version - $version : $([system.String]::Join(",", $architectures))"
-
-            foreach ($arch in $architectures)
+        [array]$versions = GetChildFolders -Path "$env:AGENT_TOOLSDIRECTORY\$SoftwareName"
+        if ($versions.count -gt 0){
+            foreach ($version in $versions)
             {
-                $path = "$env:AGENT_TOOLSDIRECTORY\$SoftwareName\$version\$arch"
-                foreach ($test in $ExecTests)
-                {
-                    if (Test-Path "$path\$test")
-                    {
-                        Write-Host "$SoftwareName($test) $version($arch) is successfully installed:"
-                        Write-Host (& "$path\$test" --version)
-                    }
-                    else
-                    {
-                        Write-Host "$SoftwareName($test)  $version ($arch) is not installed"
-                        exit 1
-                    }
-                }
+                $architectures = GetChildFolders -Path "$env:AGENT_TOOLSDIRECTORY\$SoftwareName\$version"
 
-                $description += "_Version:_ $version ($arch)<br/>"
+                Write-Host "$SoftwareName version - $version : $([system.String]::Join(",", $architectures))"
+
+                foreach ($arch in $architectures)
+                {
+                    $path = "$env:AGENT_TOOLSDIRECTORY\$SoftwareName\$version\$arch"
+                    foreach ($test in $ExecTests)
+                    {
+                        if (Test-Path "$path\$test")
+                        {
+                            Write-Host "$SoftwareName($test) $version($arch) is successfully installed:"
+                            Write-Host (& "$path\$test" --version)
+                        }
+                        else
+                        {
+                            Write-Host "$SoftwareName($test)  $version ($arch) is not installed"
+                            exit 1
+                        }
+                    }
+
+                    $description += "_Version:_ $version ($arch)<br/>"
+                }
+            }
+
+            $description += $Note
+            Add-SoftwareDetailsToMarkdown -SoftwareName $SoftwareName -DescriptionMarkdown $description
+        }
+        else
+        {
+            Write-Host "$env:AGENT_TOOLSDIRECTORY\$SoftwareName does not include any folders"
+            if ($IsRequireSoft)
+            {
+                exit 1
             }
         }
-
-        $description += $Note
-        Add-SoftwareDetailsToMarkdown -SoftwareName $SoftwareName -DescriptionMarkdown $description
     }
     else
     {
